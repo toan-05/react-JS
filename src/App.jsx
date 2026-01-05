@@ -1,54 +1,73 @@
 import { useState } from "react";
 
 function App() {
-  const [task, setTask] = useState("");
-  const [tasks, setTasks] = useState([]);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
-  const handleAdd = () => {
-    if (!task) return;
+  const [emailError, setEmailError] = useState("");
+  const [passwordError, setPasswordError] = useState("");
 
-    const newTask = {
-      id: Date.now(),
-      name: task,
-    };
+  const handleSubmit = (e) => {
+    e.preventDefault();
 
-    setTasks([...tasks, newTask]);
-    setTask("");
-  };
+    let isValid = true;
 
-  const handleDelete = (id) => {
-    const newTasks = tasks.filter((t) => t.id !== id);
-    setTasks(newTasks);
+    // EMAIL
+    if (!email) {
+      setEmailError("Email không được để trống");
+      isValid = false;
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      setEmailError("Email không đúng định dạng");
+      isValid = false;
+    } else {
+      setEmailError("");
+    }
+
+    // PASSWORD
+    if (!password) {
+      setPasswordError("Password không được để trống");
+      isValid = false;
+    } else if (password.length < 6) {
+      setPasswordError("Password phải ít nhất 6 ký tự");
+      isValid = false;
+    } else {
+      setPasswordError("");
+    }
+
+    if (isValid) {
+      alert("Đăng nhập thành công 🎉");
+    }
   };
 
   return (
     <div style={{ maxWidth: 400, margin: "50px auto" }}>
-      <h2>Todo List</h2>
+      <h2>Login</h2>
 
-      <input
-        type="text"
-        value={task}
-        onChange={(e) => setTask(e.target.value)}
-        placeholder="Nhập công việc..."
-      />
+      <form onSubmit={handleSubmit}>
+        <div>
+          <label>Email</label>
+          <input
+            type="text"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+          />
+          {emailError && <p style={{ color: "red" }}>{emailError}</p>}
+        </div>
 
-      <button onClick={handleAdd} style={{ marginLeft: 10 }}>
-        Add
-      </button>
+        <div style={{ marginTop: 10 }}>
+          <label>Password</label>
+          <input
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+          />
+          {passwordError && (
+            <p style={{ color: "red" }}>{passwordError}</p>
+          )}
+        </div>
 
-      <ul style={{ marginTop: 20 }}>
-        {tasks.map((t) => (
-          <li key={t.id}>
-            {t.name}
-            <button
-              onClick={() => handleDelete(t.id)}
-              style={{ marginLeft: 10 }}
-            >
-              Delete
-            </button>
-          </li>
-        ))}
-      </ul>
+        <button style={{ marginTop: 20 }}>Login</button>
+      </form>
     </div>
   );
 }
